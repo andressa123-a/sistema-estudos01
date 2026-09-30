@@ -6,14 +6,14 @@
     <title>Central de Estudos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
         .card-custom { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; }
         .badge-fase { font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
         .fase-1 { background-color: #ef4444; color: white; }
         .fase-2 { background-color: #f59e0b; color: white; }
         .fase-3 { background-color: #3b82f6; color: white; }
         .fase-diario { background-color: #10b981; color: white; }
-        .item-card { background-color: #334155; border-radius: 8px; padding: 12px; margin-bottom: 10px; border-left: 4px solid #64748b; }
+        .item-card { background-color: #334155; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #38bdf8; }
         .btn-filter { margin: 2px; }
     </style>
 </head>
@@ -21,7 +21,7 @@
     <div class="container-fluid max-w-6xl mx-auto">
         <h1 class="text-center fw-bold mb-4">🚀 Central de Estudos 24h</h1>
 
-        <!-- Temporizador Pomodoro -->
+        <!-- Pomodoro -->
         <div class="card card-custom p-3 text-center mb-4 mx-auto" style="max-width: 400px;">
             <h5 class="fw-bold mb-2">⏰ Bloco de Foco (Pomodoro)</h5>
             <div id="timer" class="display-4 fw-bold text-danger my-2">25:00</div>
@@ -32,22 +32,22 @@
             </div>
         </div>
 
-        <!-- Filtros por Matéria -->
+        <!-- Filtros -->
         <div class="text-center mb-4">
             <h6 class="text-light mb-2">Filtrar por Matéria:</h6>
-            <button class="btn btn-sm btn-outline-light btn-filter active" onclick="filtrarMateria('Todas')">Todas</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Português')">Português</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Matemática')">Matemática</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('História')">História</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Geografia')">Geografia</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Biologia')">Biologia</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Química')">Química</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Física')">Física</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Atualidades')">Atualidades</button>
-            <button class="btn btn-sm btn-outline-success btn-filter" onclick="filtrarMateria('Redação')">Redação</button>
+            <button class="btn btn-sm btn-outline-light btn-filter active" onclick="filtrarMateria('Todas', event)">Todas</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Português', event)">Português</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Matemática', event)">Matemática</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('História', event)">História</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Geografia', event)">Geografia</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Biologia', event)">Biologia</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Química', event)">Química</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Física', event)">Física</button>
+            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Atualidades', event)">Atualidades</button>
+            <button class="btn btn-sm btn-outline-success btn-filter" onclick="filtrarMateria('Redação', event)">Redação</button>
         </div>
 
-        <!-- Quadro Kanban -->
+        <!-- Kanban -->
         <div class="row g-3">
             <div class="col-md-4">
                 <div class="card card-custom p-3 min-vh-50">
@@ -75,9 +75,13 @@
         let materiaAtual = 'Todas';
 
         async function carregarTopicos() {
-            const res = await fetch('/api/topicos');
-            todosTopicos = await res.json();
-            renderizarKanban();
+            try {
+                const res = await fetch('/api/topicos');
+                todosTopicos = await res.json();
+                renderizarKanban();
+            } catch (err) {
+                console.error("Erro ao carregar tópicos:", err);
+            }
         }
 
         function renderizarKanban() {
@@ -105,9 +109,10 @@
                 card.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="badge badge-fase ${faseClass}">${item.fase}</span>
-                        <small class="text-info fw-bold">${item.materia}</small>
+                        <small class="text-warning fw-bold">${item.prioridade}</small>
                     </div>
-                    <div class="fw-semibold text-light my-2">${item.nome}</div>
+                    <div class="fw-bold text-info mb-1">${item.materia}</div>
+                    <div class="fw-semibold text-light mb-2">${item.nome}</div>
                     <div class="d-flex justify-content-end gap-1 mt-2">
                         ${item.status !== 'A Estudar' ? `<button onclick="mudarStatus(${item.id}, 'A Estudar')" class="btn btn-sm btn-outline-warning">⬅ A Estudar</button>` : ''}
                         ${item.status !== 'Em Andamento' ? `<button onclick="mudarStatus(${item.id}, 'Em Andamento')" class="btn btn-sm btn-outline-info">⏳ Estudando</button>` : ''}
@@ -132,14 +137,13 @@
             renderizarKanban();
         }
 
-        function filtrarMateria(materia) {
+        function filtrarMateria(materia, evt) {
             materiaAtual = materia;
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            if(evt) evt.target.classList.add('active');
             renderizarKanban();
         }
 
-        // Timer Pomodoro
         let timeLeft = 1500;
         let timerId = null;
 
@@ -153,7 +157,7 @@
             if (!timerId) {
                 timerId = setInterval(() => {
                     if (timeLeft > 0) { timeLeft--; updateTimerDisplay(); }
-                    else { clearInterval(timerId); timerId = null; alert('Tempo de foco concluído!'); }
+                    else { clearInterval(timerId); timerId = null; alert('Tempo concluído!'); }
                 }, 1000);
             }
         }

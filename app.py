@@ -1,11 +1,10 @@
 import os
-from flask import Flask, render_template, request, jsonify
 import sqlite3
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-# Nome do banco atualizado para forçar o recarregamento completo dos tópicos
-DB_NAME = 'database_v4.db'
+DB_NAME = 'database_v10.db'
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -20,70 +19,35 @@ def init_db():
             status TEXT DEFAULT 'A Estudar'
         )
     ''')
-    
     cursor.execute('SELECT COUNT(*) FROM topicos')
     if cursor.fetchone()[0] == 0:
-        dados_iniciais = [
-            # 🟣 PORTUGUÊS ⭐⭐⭐⭐⭐ (FASE 1)
-            ('Fase 1', 'Português', 'Interpretação: Tema, Ideia principal e secundárias', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Info. explícitas/implícitas e Inferência', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Fato × opinião, Tese e Argumentação', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Sentido no contexto e Linguagem verbal/não verbal', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Fonemas, Encontros vocálicos/consonantais e Dígrafos', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Divisão silábica, Ortografia e Acentuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Substantivo, Adjetivo, Artigo, Pronome e Verbo', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Advérbio, Preposição, Conjunção, Numeral e Interjeição', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Sujeito, Predicado e Complementos', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Período simples e composto (Orações)', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Concordância verbal e nominal', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Regência verbal e nominal', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Colocação pronominal e Pontuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Português', 'Linguagem: Figuras de linguagem e Vícios de linguagem', '⭐⭐⭐⭐⭐', 'A Estudar'),
-
-            # 🔵 MATEMÁTICA ⭐⭐⭐⭐⭐ (FASE 1 e FASE 2)
-            ('Fase 1', 'Matemática', 'Básica: Operações, Frações e Decimais', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: Razão, Proporção e Porcentagem', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: Regra de três simples e composta', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: MMC e MDC', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Expressões, Produtos notáveis e Fatoração', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Polinômios, Equação do 1º e 2º grau', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Sistemas de equações e Equações algébricas', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Funções: Conceito, Função do 1º e 2º grau', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Funções: Gráficos, Raízes e Vértice da parábola', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Conjuntos, Sequências, Matrizes e Determinantes', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Análise combinatória, Probabilidade e Trigonometria', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Geometria Plana/Analítica e Equações Exponenciais', '⭐⭐⭐', 'A Estudar'),
-
-            # 📜 HISTÓRIA (FASE 3)
-            ('Fase 3', 'História', 'Brasil: Colônia, Independência, 1º/2º Reinado e República', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 3', 'História', 'Brasil: Era Vargas, Ditadura Militar e Redemocratização', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 3', 'História', 'Geral: Rev. Industrial, I/II Guerra e Guerra Fria', '⭐⭐⭐', 'A Estudar'),
-
-            # 🌎 GEOGRAFIA (FASE 3)
-            ('Fase 3', 'Geografia', 'População, Migrações, Urbanização e Industrialização', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 3', 'Geografia', 'Globalização, Economia BR, Meio Ambiente e Geopolítica', '⭐⭐⭐', 'A Estudar'),
-
-            # 🧬 BIOLOGIA (FASE 3)
-            ('Fase 3', 'Biologia', 'Célula, Genética, Evolução e Ecologia', '⭐⭐⭐', 'A Estudar'),
-            ('Fase 3', 'Biologia', 'Corpo humano, Sistemas, Reprodução e Saúde', '⭐⭐⭐', 'A Estudar'),
-
-            # ⚗️ QUÍMICA (FASE 3)
-            ('Fase 3', 'Química', 'Matéria, Átomo, Tabela periódica e Ligações', '⭐', 'A Estudar'),
-            ('Fase 3', 'Química', 'Reações, Soluções, Concentração, pH e Química Ambiental', '⭐', 'A Estudar'),
-
-            # ⚡ FÍSICA (FASE 3)
-            ('Fase 3', 'Física', 'Movimento, Velocidade, Aceleração e Leis de Newton', '⭐', 'A Estudar'),
-            ('Fase 3', 'Física', 'Força, Energia, Calor, Pressão e Eletricidade', '⭐', 'A Estudar'),
-
-            # 📰 ATUALIDADES (FASE 3)
-            ('Fase 3', 'Atualidades', 'Política, Economia, Ciência, Tecnologia e Acontecimentos de 2026', '⭐', 'A Estudar'),
-
-            # 🔴 REDAÇÃO ⭐⭐⭐⭐⭐ (DIÁRIO)
+        dados = [
+            # Português
+            ('Fase 1', 'Português', 'Interpretação: Tema, Ideias principais/secundárias', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Informações explícitas e implícitas', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Fonemas, Ortografia e Acentuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Classes gramaticais e Verbos', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Concordância, Regência e Pontuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Linguagem: Figuras e Vícios de linguagem', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            # Matemática
+            ('Fase 1', 'Matemática', 'Básica: Operações, Frações, Decimais, Porcentagem', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Básica: Razão, Proporção, Regra de três, MMC/MDC', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Álgebra: Produtos Notáveis, Fatoração, Equações 1º/2º grau', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Funções: Conceito, Gráficos e Parábola', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Outros: Geometria, Análise Combinatória e Probabilidade', '⭐⭐⭐', 'A Estudar'),
+            # Conhecimentos Gerais
+            ('Fase 3', 'História', 'Brasil: Colônia, Império, República, Vargas e Ditadura', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Geografia', 'População, Urbanização, Meio Ambiente e Geopolítica', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Biologia', 'Célula, Genética, Evolução, Ecologia e Corpo Humano', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Química', 'Matéria, Átomo, Tabela Periódica, Reações e pH', '⭐', 'A Estudar'),
+            ('Fase 3', 'Física', 'Movimento, Leis de Newton, Energia e Eletricidade', '⭐', 'A Estudar'),
+            ('Fase 3', 'Atualidades', 'Acontecimentos Globais, Ciência e Sociedade (2026)', '⭐', 'A Estudar'),
+            # Redação
             ('Diário', 'Redação', 'Estrutura: Introdução, Desenvolvimento e Conclusão', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Diário', 'Redação', 'Treino: Redação sobre Educação / Saúde / Tecnologia / IA', '⭐⭐⭐⭐⭐', 'A Estudar'),
-            ('Diário', 'Redação', 'Treino: Redação sobre Meio Ambiente / Violência / Redes Sociais', '⭐⭐⭐⭐⭐', 'A Estudar')
+            ('Diário', 'Redação', 'Treino: Redação sobre Tecnologia / Inteligência Artificial', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Diário', 'Redação', 'Treino: Redação sobre Saúde / Educação / Meio Ambiente', '⭐⭐⭐⭐⭐', 'A Estudar')
         ]
-        cursor.executemany('INSERT INTO topicos (fase, materia, nome, prioridade, status) VALUES (?, ?, ?, ?, ?)', dados_iniciais)
+        cursor.executemany('INSERT INTO topicos (fase, materia, nome, prioridade, status) VALUES (?, ?, ?, ?, ?)', dados)
         conn.commit()
     conn.close()
 
@@ -93,6 +57,7 @@ def index():
 
 @app.route('/api/topicos', methods=['GET'])
 def get_topicos():
+    init_db()
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT id, fase, materia, nome, prioridade, status FROM topicos')

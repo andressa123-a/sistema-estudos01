@@ -4,8 +4,8 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Mudar o nome do arquivo zera o banco antigo e carrega a lista nova completa!
-DB_NAME = 'database_v2.db'
+# Alterado para v3 para forçar o carregamento de todos os novos tópicos
+DB_NAME = 'database_v3.db'
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -16,66 +16,80 @@ def init_db():
             fase TEXT NOT NULL,
             materia TEXT NOT NULL,
             nome TEXT NOT NULL,
-            prioridade INTEGER NOT NULL,
+            prioridade TEXT NOT NULL,
             status TEXT DEFAULT 'A Estudar'
         )
     ''')
     cursor.execute('SELECT COUNT(*) FROM topicos')
     if cursor.fetchone()[0] == 0:
         dados_iniciais = [
-            # 🥇 FASE 1 — GARANTIR PONTOS (Prioridade ⭐⭐⭐⭐⭐)
-            ('Fase 1', 'Português', 'Interpretação: Tema, Ideias principal e secundárias', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Info. explícitas/implícitas e Inferência', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Fato vs Opinião e Finalidade do texto', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Argumentação, Tese e Conclusão', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Interpretação: Sentido no contexto e Linguagem verbal/não verbal', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Fonemas, Encontros vocálicos/consonantais e Dígrafos', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Divisão silábica, Ortografia e Acentuação', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Substantivo, Adjetivo, Artigo e Pronome', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Verbo, Advérbio, Preposição e Conjunção', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Gramática: Numeral e Interjeição', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Sujeito, Predicado e Complementos', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Período simples e composto (Orações)', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Concordância verbal e nominal', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Regência verbal e nominal', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Sintaxe: Colocação pronominal e Pontuação', 5, 'A Estudar'),
-            ('Fase 1', 'Português', 'Linguagem: Figuras de linguagem e Vícios', 3, 'A Estudar'),
+            # 🟣 PORTUGUÊS ⭐⭐⭐⭐⭐ (FASE 1)
+            ('Fase 1', 'Português', 'Interpretação: Tema do texto', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Ideia principal e secundárias', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Informações explícitas e implícitas', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Inferência e Fato × opinião', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Finalidade, Argumentação e Tese', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Interpretação: Sentido no contexto e Linguagem verbal/não verbal', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Fonemas, Encontros vocálicos/consonantais e Dígrafos', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Divisão silábica, Ortografia e Acentuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Classes gramaticais e Formação de palavras', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Substantivo, Adjetivo, Artigo, Pronome e Verbo', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Gramática: Advérbio, Preposição, Conjunção, Numeral e Interjeição', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Sujeito, Predicado e Complementos', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Período simples e composto (Coordenadas/Subordinadas)', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Concordância verbal e nominal', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Regência verbal e nominal', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Sintaxe: Colocação pronominal e Pontuação', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Linguagem: Metáfora, Metonímia, Comparação, Ironia e Hipérbole', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Português', 'Linguagem: Antítese, Eufemismo, Personificação e Vícios', '⭐⭐⭐⭐⭐', 'A Estudar'),
 
-            ('Fase 1', 'Matemática', 'Básica: Operações, Frações e Decimais', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: Razão, Proporção e Porcentagem', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: Regra de três simples e composta', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Básica: MMC e MDC', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Expressões, Produtos notáveis e Fatoração', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Equação do 1º e 2º grau', 5, 'A Estudar'),
-            ('Fase 1', 'Matemática', 'Álgebra: Sistemas de equações e Polinômios', 5, 'A Estudar'),
+            # 🔵 MATEMÁTICA ⭐⭐⭐⭐⭐ (FASE 1 e FASE 2)
+            ('Fase 1', 'Matemática', 'Básica: Operações básicas, Frações e Decimais', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Básica: Razão, Proporção e Porcentagem', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Básica: Regra de três simples e composta', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Básica: MMC e MDC', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Álgebra: Expressões, Produtos notáveis e Fatoração', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Álgebra: Polinômios, Equação do 1º e 2º grau', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 1', 'Matemática', 'Álgebra: Sistemas de equações e Equações algébricas', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Funções: Conceito, Função do 1º e 2º grau', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Funções: Gráficos, Raízes, Crescimento e Vértice da parábola', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Outros: Conjuntos, Sequências, Matrizes e Determinantes', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Outros: Sistemas lineares, Análise combinatória e Probabilidade', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 2', 'Matemática', 'Outros: Trigonometria, Geometria plana e analítica, Exponenciais', '⭐⭐⭐', 'A Estudar'),
 
-            # 🥈 FASE 2 — SUBIR A NOTA (Prioridade ⭐⭐⭐)
-            ('Fase 2', 'Matemática', 'Funções: Conceito, Função do 1º e 2º grau', 3, 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Funções: Gráficos, Raízes e Vértice da parábola', 3, 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Geometria Plana e Analítica', 3, 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Análise Combinatória e Probabilidade', 3, 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Trigonometria e Equações exponenciais', 3, 'A Estudar'),
-            ('Fase 2', 'Matemática', 'Outros: Conjuntos, Sequências e Matrizes', 3, 'A Estudar'),
+            # 🥉 HISTÓRIA (FASE 3)
+            ('Fase 3', 'História', 'Brasil: Colônia, Independência, 1º/2º Reinado e República', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'História', 'Brasil: Era Vargas, Ditadura Militar e Redemocratização', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'História', 'Geral: Rev. Industrial, I/II Guerra Mundial, Guerra Fria e Contemporânea', '⭐⭐⭐', 'A Estudar'),
 
-            # 🥉 FASE 3 — CONHECIMENTOS GERAIS (Prioridade ⭐ a ⭐⭐⭐)
-            ('Fase 3', 'História', 'Brasil: Colônia, Independência, Reinado, República e Vargas', 3, 'A Estudar'),
-            ('Fase 3', 'História', 'Brasil: Ditadura Militar e Redemocratização', 3, 'A Estudar'),
-            ('Fase 3', 'História', 'Geral: Rev. Industrial, I/II Guerra e Guerra Fria', 3, 'A Estudar'),
-            ('Fase 3', 'Geografia', 'População, Migrações, Urbanização e Industrialização', 3, 'A Estudar'),
-            ('Fase 3', 'Geografia', 'Globalização, Economia BR, Meio Ambiente e Geopolítica', 3, 'A Estudar'),
-            ('Fase 3', 'Biologia', 'Célula, Genética, Evolução e Ecologia', 3, 'A Estudar'),
-            ('Fase 3', 'Biologia', 'Corpo Humano, Sistemas, Reprodução e Saúde', 3, 'A Estudar'),
-            ('Fase 3', 'Química', 'Matéria, Átomo, Tabela Periódica e Ligações', 1, 'A Estudar'),
-            ('Fase 3', 'Química', 'Reações, Soluções, Concentração e pH', 1, 'A Estudar'),
-            ('Fase 3', 'Física', 'Movimento, Leis de Newton, Força e Energia', 1, 'A Estudar'),
-            ('Fase 3', 'Física', 'Calor, Temperatura, Pressão e Eletricidade', 1, 'A Estudar'),
-            ('Fase 3', 'Atualidades', 'Acontecimentos Globais, Ciência, Tecnologia e Sociedade', 1, 'A Estudar'),
+            # 🌎 GEOGRAFIA (FASE 3)
+            ('Fase 3', 'Geografia', 'População, Migrações, Urbanização e Industrialização', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Geografia', 'Globalização, Economia BR, Agricultura e Recursos Naturais', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Geografia', 'Meio Ambiente, Mudanças Climáticas, Geopolítica e Conflitos', '⭐⭐⭐', 'A Estudar'),
 
-            # ✍️ ROTINA DIÁRIA — REDAÇÃO (100 Pontos ⭐⭐⭐⭐⭐)
-            ('Diário', 'Redação', 'Estrutura: Introdução, Desenvolvimento e Conclusão', 5, 'A Estudar'),
-            ('Diário', 'Redação', 'Treino: Redação sobre Tecnologia / Inteligência Artificial', 5, 'A Estudar'),
-            ('Diário', 'Redação', 'Treino: Redação sobre Educação / Saúde / Juventude', 5, 'A Estudar'),
-            ('Diário', 'Redação', 'Treino: Redação sobre Meio Ambiente / Violência / Redes Sociais', 5, 'A Estudar')
+            # 🧬 BIOLOGIA (FASE 3)
+            ('Fase 3', 'Biologia', 'Célula, Genética, Evolução e Ecologia', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Biologia', 'Cadeias alimentares, Relações ecológicas e Ciclos biogeoquímicos', '⭐⭐⭐', 'A Estudar'),
+            ('Fase 3', 'Biologia', 'Corpo humano, Sistemas, Reprodução e Saúde/Doenças', '⭐⭐⭐', 'A Estudar'),
+
+            # ⚗️ QUÍMICA (FASE 3)
+            ('Fase 3', 'Química', 'Matéria, Átomo, Tabela periódica e Ligações', '⭐', 'A Estudar'),
+            ('Fase 3', 'Química', 'Funções, Reações, Balanceamento, Soluções, Concentração e pH', '⭐', 'A Estudar'),
+            ('Fase 3', 'Química', 'Química Ambiental', '⭐', 'A Estudar'),
+
+            # ⚡ FÍSICA (FASE 3)
+            ('Fase 3', 'Física', 'Movimento, Velocidade, Aceleração e Leis de Newton', '⭐', 'A Estudar'),
+            ('Fase 3', 'Física', 'Força, Trabalho, Energia, Potência, Calor, Temperatura, Pressão e Eletricidade', '⭐', 'A Estudar'),
+
+            # 📰 ATUALIDADES (FASE 3)
+            ('Fase 3', 'Atualidades', 'Brasil, Política internacional, Economia e Meio Ambiente', '⭐', 'A Estudar'),
+            ('Fase 3', 'Atualidades', 'Ciência, Tecnologia, Saúde, Questões sociais e Acontecimentos de 2026', '⭐', 'A Estudar'),
+
+            # 🔴 REDAÇÃO ⭐⭐⭐⭐⭐ (DIÁRIO)
+            ('Diário', 'Redação', 'Estrutura: Introdução, Desenvolvimento, Conclusão, Coerência e Coesão', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Diário', 'Redação', 'Língua Portuguesa: Ortografia, Pontuação, Concordância e Vocabulário', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Diário', 'Redação', 'Treino: Redação sobre Educação / Saúde / Tecnologia / IA', '⭐⭐⭐⭐⭐', 'A Estudar'),
+            ('Diário', 'Redação', 'Treino: Redação sobre Meio Ambiente / Desigualdade / Juventude / Violência', '⭐⭐⭐⭐⭐', 'A Estudar')
         ]
         cursor.executemany('INSERT INTO topicos (fase, materia, nome, prioridade, status) VALUES (?, ?, ?, ?, ?)', dados_iniciais)
         conn.commit()

@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central de Estudos</title>
+    <title>Central de Estudos 24h</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-        .card-custom { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; }
-        .badge-fase { font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 15px; }
+        .card-custom { background-color: #1e293b; border: 1px solid #334155; border-radius: 10px; margin-bottom: 15px; }
+        .item-card { background-color: #334155; border-radius: 8px; padding: 10px; margin-bottom: 10px; border-left: 4px solid #38bdf8; }
+        .badge-fase { font-size: 0.75rem; padding: 3px 6px; border-radius: 4px; font-weight: bold; }
         .fase-1 { background-color: #ef4444; color: white; }
         .fase-2 { background-color: #f59e0b; color: white; }
         .fase-3 { background-color: #3b82f6; color: white; }
         .fase-diario { background-color: #10b981; color: white; }
-        .item-card { background-color: #334155; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #38bdf8; }
-        .btn-filter { margin: 2px; }
     </style>
 </head>
-<body class="p-3 p-md-4">
-    <div class="container-fluid max-w-6xl mx-auto">
-        <h1 class="text-center fw-bold mb-4">🚀 Central de Estudos 24h</h1>
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center text-info fw-bold mb-3">🚀 Central de Estudos 24h</h1>
 
         <!-- Pomodoro -->
-        <div class="card card-custom p-3 text-center mb-4 mx-auto" style="max-width: 400px;">
-            <h5 class="fw-bold mb-2">⏰ Bloco de Foco (Pomodoro)</h5>
-            <div id="timer" class="display-4 fw-bold text-danger my-2">25:00</div>
+        <div class="card card-custom p-3 text-center mx-auto" style="max-width: 350px;">
+            <h5 class="fw-bold">⏱ Bloco de Foco (25 min)</h5>
+            <div id="timer" class="display-5 fw-bold text-danger my-1">25:00</div>
             <div>
                 <button class="btn btn-primary btn-sm me-1" onclick="startTimer()">Iniciar</button>
                 <button class="btn btn-warning btn-sm me-1" onclick="pauseTimer()">Pausar</button>
@@ -33,139 +32,128 @@
         </div>
 
         <!-- Filtros -->
-        <div class="text-center mb-4">
-            <h6 class="text-light mb-2">Filtrar por Matéria:</h6>
-            <button class="btn btn-sm btn-outline-light btn-filter active" onclick="filtrarMateria('Todas', event)">Todas</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Português', event)">Português</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Matemática', event)">Matemática</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('História', event)">História</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Geografia', event)">Geografia</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Biologia', event)">Biologia</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Química', event)">Química</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Física', event)">Física</button>
-            <button class="btn btn-sm btn-outline-info btn-filter" onclick="filtrarMateria('Atualidades', event)">Atualidades</button>
-            <button class="btn btn-sm btn-outline-success btn-filter" onclick="filtrarMateria('Redação', event)">Redação</button>
+        <div class="text-center mb-3">
+            <span class="d-block mb-1 text-secondary">Filtrar Matéria:</span>
+            <button class="btn btn-sm btn-outline-light m-1" onclick="filtrar('Todas')">Todas</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Português')">Português</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Matemática')">Matemática</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('História')">História</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Geografia')">Geografia</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Biologia')">Biologia</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Química')">Química</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Física')">Física</button>
+            <button class="btn btn-sm btn-outline-info m-1" onclick="filtrar('Atualidades')">Atualidades</button>
+            <button class="btn btn-sm btn-outline-success m-1" onclick="filtrar('Redação')">Redação</button>
         </div>
 
-        <!-- Kanban -->
-        <div class="row g-3">
+        <!-- Colunas -->
+        <div class="row">
             <div class="col-md-4">
-                <div class="card card-custom p-3 min-vh-50">
-                    <h5 class="fw-bold text-warning border-bottom border-secondary pb-2">📥 A Estudar</h5>
-                    <div id="coluna-a-estudar" class="mt-3"></div>
+                <div class="card card-custom p-3">
+                    <h5 class="text-warning border-bottom border-secondary pb-2">📥 A Estudar</h5>
+                    <div id="coluna-a-estudar"></div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card card-custom p-3 min-vh-50">
-                    <h5 class="fw-bold text-info border-bottom border-secondary pb-2">⏳ Em Andamento</h5>
-                    <div id="coluna-em-andamento" class="mt-3"></div>
+                <div class="card card-custom p-3">
+                    <h5 class="text-info border-bottom border-secondary pb-2">⏳ Em Andamento</h5>
+                    <div id="coluna-em-andamento"></div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card card-custom p-3 min-vh-50">
-                    <h5 class="fw-bold text-success border-bottom border-secondary pb-2">✅ Concluído</h5>
-                    <div id="coluna-concluido" class="mt-3"></div>
+                <div class="card card-custom p-3">
+                    <h5 class="text-success border-bottom border-secondary pb-2">✅ Concluído</h5>
+                    <div id="coluna-concluido"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let todosTopicos = [];
-        let materiaAtual = 'Todas';
+        let lista = [];
+        let filtroMateria = 'Todas';
 
-        async function carregarTopicos() {
-            try {
-                const res = await fetch('/api/topicos');
-                todosTopicos = await res.json();
-                renderizarKanban();
-            } catch (err) {
-                console.error("Erro ao carregar tópicos:", err);
-            }
+        function carregar() {
+            fetch('/api/topicos')
+                .then(r => r.json())
+                .then(data => {
+                    lista = data;
+                    render();
+                })
+                .catch(e => console.error(e));
         }
 
-        function renderizarKanban() {
-            const colAEstudar = document.getElementById('coluna-a-estudar');
-            const colEmAndamento = document.getElementById('coluna-em-andamento');
-            const colConcluido = document.getElementById('coluna-concluido');
+        function render() {
+            const colA = document.getElementById('coluna-a-estudar');
+            const colE = document.getElementById('coluna-em-andamento');
+            const colC = document.getElementById('coluna-concluido');
 
-            colAEstudar.innerHTML = '';
-            colEmAndamento.innerHTML = '';
-            colConcluido.innerHTML = '';
+            colA.innerHTML = ''; colE.innerHTML = ''; colC.innerHTML = '';
 
-            const filtrados = materiaAtual === 'Todas' 
-                ? todosTopicos 
-                : todosTopicos.filter(t => t.materia === materiaAtual);
+            const filtrados = (filtroMateria === 'Todas') 
+                ? lista 
+                : lista.filter(x => x.materia === filtroMateria);
 
             filtrados.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'item-card';
 
-                let faseClass = 'fase-3';
-                if (item.fase === 'Fase 1') faseClass = 'fase-1';
-                if (item.fase === 'Fase 2') faseClass = 'fase-2';
-                if (item.fase === 'Diário') faseClass = 'fase-diario';
+                let fClass = 'fase-3';
+                if (item.fase === 'Fase 1') fClass = 'fase-1';
+                if (item.fase === 'Fase 2') fClass = 'fase-2';
+                if (item.fase === 'Diário') fClass = 'fase-diario';
 
                 card.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="badge badge-fase ${faseClass}">${item.fase}</span>
-                        <small class="text-warning fw-bold">${item.prioridade}</small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge badge-fase ${fClass}">${item.fase}</span>
+                        <small class="text-warning">${item.prioridade}</small>
                     </div>
-                    <div class="fw-bold text-info mb-1">${item.materia}</div>
-                    <div class="fw-semibold text-light mb-2">${item.nome}</div>
-                    <div class="d-flex justify-content-end gap-1 mt-2">
-                        ${item.status !== 'A Estudar' ? `<button onclick="mudarStatus(${item.id}, 'A Estudar')" class="btn btn-sm btn-outline-warning">⬅ A Estudar</button>` : ''}
-                        ${item.status !== 'Em Andamento' ? `<button onclick="mudarStatus(${item.id}, 'Em Andamento')" class="btn btn-sm btn-outline-info">⏳ Estudando</button>` : ''}
-                        ${item.status !== 'Concluído' ? `<button onclick="mudarStatus(${item.id}, 'Concluído')" class="btn btn-sm btn-outline-success">✔ Concluir</button>` : ''}
+                    <div class="fw-bold text-info my-1">${item.materia}</div>
+                    <div class="text-light mb-2">${item.nome}</div>
+                    <div class="d-flex gap-1">
+                        ${item.status !== 'A Estudar' ? `<button onclick="mover(${item.id}, 'A Estudar')" class="btn btn-sm btn-outline-warning p-1">⬅ A Estudar</button>` : ''}
+                        ${item.status !== 'Em Andamento' ? `<button onclick="mover(${item.id}, 'Em Andamento')" class="btn btn-sm btn-outline-info p-1">⏳ Estudando</button>` : ''}
+                        ${item.status !== 'Concluído' ? `<button onclick="mover(${item.id}, 'Concluído')" class="btn btn-sm btn-outline-success p-1">✔ Concluir</button>` : ''}
                     </div>
                 `;
 
-                if (item.status === 'A Estudar') colAEstudar.appendChild(card);
-                else if (item.status === 'Em Andamento') colEmAndamento.appendChild(card);
-                else if (item.status === 'Concluído') colConcluido.appendChild(card);
+                if (item.status === 'A Estudar') colA.appendChild(card);
+                else if (item.status === 'Em Andamento') colE.appendChild(card);
+                else if (item.status === 'Concluído') colC.appendChild(card);
             });
         }
 
-        async function mudarStatus(id, novoStatus) {
-            await fetch('/api/topicos/atualizar', {
+        function mover(id, novoStatus) {
+            fetch('/api/topicos/atualizar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, status: novoStatus })
+                body: JSON.stringify({ id: id, status: novoStatus })
+            }).then(() => {
+                const item = lista.find(x => x.id === id);
+                if (item) item.status = novoStatus;
+                render();
             });
-            const item = todosTopicos.find(t => t.id === id);
-            if (item) item.status = novoStatus;
-            renderizarKanban();
         }
 
-        function filtrarMateria(materia, evt) {
-            materiaAtual = materia;
-            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            if(evt) evt.target.classList.add('active');
-            renderizarKanban();
+        function filtrar(mat) {
+            filtroMateria = mat;
+            render();
         }
 
-        let timeLeft = 1500;
-        let timerId = null;
-
-        function updateTimerDisplay() {
-            const min = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const sec = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timer').textContent = `${min}:${sec}`;
+        // Pomodoro
+        let timeLeft = 1500, timerId = null;
+        function updateTimer() {
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${m}:${s}`;
         }
-
         function startTimer() {
-            if (!timerId) {
-                timerId = setInterval(() => {
-                    if (timeLeft > 0) { timeLeft--; updateTimerDisplay(); }
-                    else { clearInterval(timerId); timerId = null; alert('Tempo concluído!'); }
-                }, 1000);
-            }
+            if (!timerId) timerId = setInterval(() => { if (timeLeft > 0) { timeLeft--; updateTimer(); } }, 1000);
         }
-
         function pauseTimer() { clearInterval(timerId); timerId = null; }
-        function resetTimer() { pauseTimer(); timeLeft = 1500; updateTimerDisplay(); }
+        function resetTimer() { pauseTimer(); timeLeft = 1500; updateTimer(); }
 
-        carregarTopicos();
+        carregar();
     </script>
 </body>
 </html>

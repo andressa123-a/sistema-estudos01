@@ -4,8 +4,11 @@ import sqlite3
 
 app = Flask(__name__)
 
+# Mudar o nome do arquivo zera o banco antigo e carrega a lista nova completa!
+DB_NAME = 'database_v2.db'
+
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS topicos (
@@ -84,7 +87,7 @@ def index():
 
 @app.route('/api/topicos', methods=['GET'])
 def get_topicos():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('SELECT id, fase, materia, nome, prioridade, status FROM topicos')
     rows = cursor.fetchall()
@@ -94,7 +97,7 @@ def get_topicos():
 @app.route('/api/topicos/atualizar', methods=['POST'])
 def atualizar_status():
     data = request.json
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('UPDATE topicos SET status = ? WHERE id = ?', (data['status'], data['id']))
     conn.commit()

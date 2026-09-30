@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Estudos 24h</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #f8fafc; padding: 15px; }
+        h1 { text-align: center; margin-bottom: 20px; color: #38bdf8; font-size: 1.5rem; }
+        .pomodoro { background: #1e293b; padding: 15px; border-radius: 12px; text-align: center; max-width: 400px; margin: 0 auto 20px; border: 1px solid #334155; }
+        .timer { font-size: 2.5rem; font-weight: bold; margin: 10px 0; color: #f43f5e; }
+        button { background: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; margin: 3px; }
+        button:hover { background: #0369a1; }
+        .board { display: flex; flex-direction: column; gap: 15px; }
+        @media(min-width: 768px) { .board { flex-direction: row; } }
+        .column { background: #1e293b; border-radius: 12px; padding: 12px; flex: 1; border: 1px solid #334155; }
+        .column h2 { font-size: 1rem; margin-bottom: 10px; color: #94a3b8; border-bottom: 2px solid #334155; padding-bottom: 5px; }
+        .card { background: #334155; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+        .card h3 { font-size: 0.9rem; margin-bottom: 5px; }
+        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; }
+        .fase-1 { background: #ef4444; color: white; }
+        .fase-2 { background: #f59e0b; color: white; }
+        .fase-3 { background: #10b981; color: white; }
+        .diario { background: #8b5cf6; color: white; }
+        select { background: #0f172a; color: white; border: 1px solid #475569; padding: 4px; border-radius: 4px; font-size: 0.8rem; width: 100%; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Central de Estudos 24h</h1>
+    <div class="pomodoro">
+        <h2>⏱️️ Bloco de Foco (Pomodoro)</h2>
+        <div class="timer" id="timer">25:00</div>
+        <button onclick="startTimer()">Iniciar</button>
+        <button onclick="pauseTimer()">Pausar</button>
+        <button onclick="resetTimer()">Resetar</button>
+    </div>
+    <div class="board">
+        <div class="column">
+            <h2>📥 A Estudar</h2>
+            <div id="col-a-estudar"></div>
+        </div>
+        <div class="column">
+            <h2>⏳ Em Andamento</h2>
+            <div id="col-em-andamento"></div>
+        </div>
+        <div class="column">
+            <h2>✅ Concluído</h2>
+            <div id="col-concluido"></div>
+        </div>
+    </div>
+    <script>
+        let timeLeft = 1500;
+        let timerId = null;
+
+        function updateTimer() {
+            const min = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const sec = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer').innerText = `${min}:${sec}`;
+        }
+
+        function startTimer() {
+            if (!timerId) {
+                timerId = setInterval(() => {
+                    if (timeLeft > 0) { timeLeft--; updateTimer(); }
+                    else { clearInterval(timerId); alert('Tempo esgotado!'); }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() { clearInterval(timerId); timerId = null; }
+        function resetTimer() { pauseTimer(); timeLeft = 1500; updateTimer(); }
+
+        async function loadTopicos() {
+            const res = await fetch('/api/topicos');
+            const data = await res.json();
+            document.getElementById('col-a-estudar').innerHTML = '';
+            document.getElementById('col-em-andamento').innerHTML = '';
+            document.getElementById('col-concluido').innerHTML = '';
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                let tagClass = 'diario';
+                if (item.fase === 'Fase 1') tagClass = 'fase-1';
+                if (item.fase === 'Fase 2') tagClass = 'fase-2';
+                if (item.fase === 'Fase 3') tagClass = 'fase-3';
+
+                card.innerHTML = `
+                    <span class="tag ${tagClass}">${item.fase} - ${item.materia}</span>
+                    <h3>${item.nome}</h3>
+                    <select onchange="updateStatus(${item.id}, this.value)">
+                        <option value="A Estudar" ${item.status === 'A Estudar' ? 'selected' : ''}>A Estudar</option>
+                        <option value="Em Andamento" ${item.status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
+                        <option value="Concluído" ${item.status === 'Concluído' ? 'selected' : ''}>Concluído</option>
+                    </select>
+                `;
+
+                if (item.status === 'A Estudar') document.getElementById('col-a-estudar').appendChild(card);
+                else if (item.status === 'Em Andamento') document.getElementById('col-em-andamento').appendChild(card);
+                else if (item.status === 'Concluído') document.getElementById('col-concluido').appendChild(card);
+            });
+        }
+
+        async function updateStatus(id, newStatus) {
+            await fetch('/api/topicos/atualizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status: newStatus })
+            });
+            loadTopicos();
+        }
+
+        loadTopicos();
+    </script>
+</body>
+</html>
